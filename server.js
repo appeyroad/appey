@@ -25,7 +25,31 @@ app.get('/users', (req,res) => {
         res.json({result:true, users: users});
     })
 })
-// const mongodbUri = 'mongodb://bhkim963:bh635241!@bh-shard-00-00-ydxsf.mongodb.net:27017';
+app.put('/isuser', (req,res) => {
+    console.log(req.body)
+    User.find({email:req.body.id, password:req.body.pw}, (err, user) => {
+        if(err){console.log(err)}
+        console.log('user: ', user);
+        if(user.length != 0) {
+            res.json({result:true, user: user});
+        } else {
+            res.json({result:false, err:'no_user'})
+        }
+    })
+})
+app.get(`/getuser/:id`, (req,res) => {
+    console.log(req.params);
+    User.find({_id:req.params.id}, (err, user) => {
+        if(err){console.log(err)}
+        console.log('user: ', user);
+        if(user.length != 0) {
+            res.json({result:true, user: user});
+        } else {
+            res.json({result:false, err:'no_user'})
+        }
+    })
+})
+// const mongodbUri = 'mongodb://bhkim963:bh849710!@bh-shard-00-00-ydxsf.mongodb.net:27017,bh-shard-00-01-ydxsf.mongodb.net:27017,bh-shard-00-02-ydxsf.mongodb.net:27017';
 const mongodbUri = 'mongodb://localhost:27017'
 mongoose.connect(mongodbUri, {
     // useMongoClient: true
