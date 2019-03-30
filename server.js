@@ -28,7 +28,7 @@ app.get('/users', (req,res) => {
 })
 app.put('/isuser', (req,res) => {
     console.log(req.body)
-    User.find({email:req.body.id, password:req.body.pw}, (err, user) => {
+    User.find({email:req.body.id, pw:req.body.pw}, (err, user) => {
         if(err){console.log(err)}
         console.log('user: ', user);
         if(user.length != 0) {
@@ -50,6 +50,24 @@ app.get(`/getuser/:id`, (req,res) => {
         }
     })
 })
+app.post(`/adduser`, (req,res) => {
+    console.log(req.body);
+    User.find({id:req.body.id}, (err,user) => {
+        if(err){console.log(err)}
+        if(user.length == 0) {
+            User.addUser(req.body.id, req.body.pw, req.body.name, 1).then(user => {
+                res.json({result:true, user:user})
+            })
+            .catch(err => {
+                console.log(err)
+            })
+        } else {
+            res.json({result:false, err:'duplicate_user'})
+        }
+    })
+})
+
+
 const mongodbUri = config.mongodbUri();
 // const mongodbUri = 'mongodb://localhost:27017'
 mongoose.connect(mongodbUri, {
