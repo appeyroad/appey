@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var User = require('./user.js');
 var cors = require('cors');
+var config = require('./config');
 
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(bodyParser.json());
@@ -49,8 +50,8 @@ app.get(`/getuser/:id`, (req,res) => {
         }
     })
 })
-// const mongodbUri = 'mongodb://bhkim963:bh849710!@bh-shard-00-00-ydxsf.mongodb.net:27017,bh-shard-00-01-ydxsf.mongodb.net:27017,bh-shard-00-02-ydxsf.mongodb.net:27017';
-const mongodbUri = 'mongodb://localhost:27017'
+const mongodbUri = config.mongodbUri();
+// const mongodbUri = 'mongodb://localhost:27017'
 mongoose.connect(mongodbUri, {
     // useMongoClient: true
     // useNewUrlParser: true
