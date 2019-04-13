@@ -2,7 +2,6 @@ const express = require('express')
 const app = express();
 const bodyParser = require('body-parser');
 var mongoose = require('mongoose');
-var User = require('./user.js');
 var cors = require('cors');
 var config = require('./config');
 
@@ -12,61 +11,14 @@ app.use(cors());
 app.options('*', cors());
 
 var port = process.env.PORT || 3001;
-const route = require('./routes.js');
 
 app.get('/', (req, res) => {
     console.log('GET \'/\' url!!')
     res.send('Hello World!');
 })
-app.get('/users', (req,res) => {
-    
-    User.find({}, (err,users)=>{
-        if(err){console.log(err)}
-        console.log(users);
-        res.json({result:true, users: users});
-    })
-})
-app.put('/isuser', (req,res) => {
-    console.log(req.body)
-    User.find({email:req.body.id, pw:req.body.pw}, (err, user) => {
-        if(err){console.log(err)}
-        console.log('user: ', user);
-        if(user.length != 0) {
-            res.json({result:true, user: user});
-        } else {
-            res.json({result:false, err:'no_user'})
-        }
-    })
-})
-app.get(`/getuser/:id`, (req,res) => {
-    console.log(req.params);
-    User.find({_id:req.params.id}, (err, user) => {
-        if(err){console.log(err)}
-        console.log('user: ', user);
-        if(user.length != 0) {
-            res.json({result:true, user: user});
-        } else {
-            res.json({result:false, err:'no_user'})
-        }
-    })
-})
-app.post(`/adduser`, (req,res) => {
-    console.log(req.body);
-    User.find({id:req.body.id}, (err,user) => {
-        if(err){console.log(err)}
-        if(user.length == 0) {
-            User.addUser(req.body.id, req.body.pw, req.body.name, 1).then(user => {
-                res.json({result:true, user:user})
-            })
-            .catch(err => {
-                console.log(err)
-            })
-        } else {
-            res.json({result:false, err:'duplicate_user'})
-        }
-    })
-})
 
+let users = require('./api/users');
+app.use('/api/users', users);
 
 const mongodbUri = config.mongodbUri();
 // const mongodbUri = 'mongodb://localhost:27017'
